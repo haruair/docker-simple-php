@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  db:
+    image: mariadb:5.5
+    volumes:
+      - "./data:/var/lib/mysql:rw"
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.7
+    depends_on:
+      - db
+    ports:
+      - "8000:80"
+    env_file:
+      - .env
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ".:/var/www/html"
+    depends_on:
+      - db
+    ports:
+      - "80:80"
